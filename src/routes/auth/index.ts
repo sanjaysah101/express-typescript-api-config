@@ -1,15 +1,25 @@
 import express, { Request, Response } from 'express';
-import { AUTH_ROUTES, GENERAL_ERRORS } from '../../constants';
 import { handleValidationErrors } from '../../middlewares';
+import { sendApiResponse } from '../../utils/sendApiResponse';
+import { INTERNAL_SERVER_ERROR, SIGN_UP } from '../../constants';
 const authRoutes = express.Router();
 
-const { INTERNAL_SERVER_ERROR } = GENERAL_ERRORS;
-
-authRoutes.post(AUTH_ROUTES.SIGN_UP, handleValidationErrors, async (_: Request, res: Response) => {
+authRoutes.post(SIGN_UP, handleValidationErrors, async (_: Request, response: Response) => {
   try {
-    res.status(201).json({ message: '', data: '' });
+    sendApiResponse({
+      response,
+      message: '',
+      statusCode: 201,
+      payload: { data: '' },
+    });
   } catch (error) {
-    res.status(500).json({ message: INTERNAL_SERVER_ERROR, error });
+    sendApiResponse({
+      response,
+      message: INTERNAL_SERVER_ERROR,
+      statusCode: 500,
+
+      errors: error as Error,
+    });
   }
 });
 
